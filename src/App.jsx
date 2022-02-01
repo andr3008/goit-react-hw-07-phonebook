@@ -7,24 +7,28 @@ import ContactList from "./components/ContactList/ContactList";
 import Filter from "./components/Filter/Filter";
 import { fetchContacts } from "./redux/phonebook/phonebook-operations";
 import { useEffect } from "react";
+import loading from "./redux/phonebook/phonebook-reducer";
 export default function App() {
 	const contacts = useSelector(getVisibleContacts);
-
+	const isLoading = useSelector(loading);
 	const dispatch = useDispatch();
 	useEffect(() => dispatch(fetchContacts()), [dispatch]);
 
 	return (
 		<Wrapper>
 			<Toaster />
+
 			<Title>Phonebook</Title>
 			<ContactForm />
 			<TitleContacts>Contacts</TitleContacts>
+
 			<Filter />
 			{contacts.length > 0 ? (
 				<ContactList contacts={contacts} />
 			) : (
 				<P>Your phonebook is empty.</P>
 			)}
+			{isLoading && <h1>Loading...</h1>}
 		</Wrapper>
 	);
 }
