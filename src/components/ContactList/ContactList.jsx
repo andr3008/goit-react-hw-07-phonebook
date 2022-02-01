@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getVisibleContacts } from "../../redux/phonebook/phonebook-selectors";
-import { deleteContact } from "../../redux/phonebook/phonebook-actions";
+import { deleteContact } from "../../redux/phonebook/phonebook-operations";
 import React from "react";
 import { Ul, Li, Button, P } from "./ContactList.styled";
 
