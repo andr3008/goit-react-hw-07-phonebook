@@ -1,16 +1,15 @@
 import { getVisibleContacts } from "./redux/phonebook/phonebook-selectors";
+import { fetchContacts } from "./redux/phonebook/phonebook-operations";
+import { Wrapper, Title, TitleContacts, P } from "./App.styled";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Toaster } from "react-hot-toast";
-import { Wrapper, Title, TitleContacts, P } from "./App.styled";
 import ContactForm from "./components/ContactForm/ContactForm";
 import ContactList from "./components/ContactList/ContactList";
 import Filter from "./components/Filter/Filter";
-import { fetchContacts } from "./redux/phonebook/phonebook-operations";
-import { useEffect } from "react";
-import loading from "./redux/phonebook/phonebook-reducer";
+
 export default function App() {
 	const contacts = useSelector(getVisibleContacts);
-	const isLoading = useSelector(loading);
 	const dispatch = useDispatch();
 	useEffect(() => dispatch(fetchContacts()), [dispatch]);
 
@@ -28,7 +27,6 @@ export default function App() {
 			) : (
 				<P>Your phonebook is empty.</P>
 			)}
-			{isLoading && <h1>Loading...</h1>}
 		</Wrapper>
 	);
 }

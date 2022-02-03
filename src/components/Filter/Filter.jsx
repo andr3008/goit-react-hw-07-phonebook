@@ -1,22 +1,21 @@
-import { useDispatch, useSelector } from "react-redux";
-import { changeFilter } from "../../redux/phonebook/phonebook-actions";
+import { changeFilter } from "../../redux/phonebook/phonebook-operations";
 import { getFilter } from "../../redux/phonebook/phonebook-selectors";
-import React from "react";
-import { nanoid } from "nanoid";
 import { Label, Input } from "./Filter.styled";
+import { nanoid } from "nanoid";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Filter() {
 	const dispatch = useDispatch();
 	const filter = useSelector(getFilter);
-
 	const onChange = (value) => dispatch(changeFilter(value));
 
 	const handleFilterChange = (e) => {
 		const { value } = e.target;
-		onChange(value.toLowerCase());
+		onChange(value);
 	};
 
 	const filterInputId = nanoid();
+
 	return (
 		<Label htmlFor={filterInputId}>
 			<Input

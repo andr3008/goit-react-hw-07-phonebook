@@ -1,37 +1,39 @@
-import axios from "axios";
-import {
-  fetchContactRequest,
-  fetchContactSuccess,
-  fetchContactError,
-  addContactRequest,
-  addContactSuccess,
-  addContactError,
-  deleteContactRequest,
-  deleteContactSuccess,
-  deleteContactError,
-} from "./phonebook-actions";
-axios.defaults.baseURL = "https://61f8f8ea783c1d0017c44866.mockapi.io";
-export const fetchContacts = () => (dispatch) => {
-  dispatch(fetchContactRequest());
-  axios
-    .get("/contacts")
-    .then(({ data }) => dispatch(fetchContactSuccess(data)))
-    .catch((error) => dispatch(fetchContactError(error)));
-};
-export const addContact =
-  ({ name, number }) =>
-  (dispatch) => {
-    const contact = { name, number };
-    dispatch(addContactRequest());
-    axios
-      .post("/contacts", contact)
-      .then(({ data }) => dispatch(addContactSuccess(data)))
-      .catch((error) => dispatch(addContactError(error)));
-  };
-export const deleteContact = (contactId) => (dispatch) => {
-  dispatch(deleteContactRequest());
-  axios
-    .delete(`/contacts/${contactId}`)
-    .then(() => dispatch(deleteContactSuccess(contactId)))
-    .catch((error) => dispatch(deleteContactError(error)));
-};
+import * as contactAPI from "../../services/phonebook-api";
+import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
+
+export const changeFilter = createAction("contacts/changeFilter");
+
+export const fetchContacts = createAsyncThunk(
+  "contacts/fetchContacts",
+  async (_, { rejectWithValue }) => {
+    try {
+      const contacts = await contactAPI.fetchContacts();
+      return contacts;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+export const addContact = createAsyncThunk(
+  "contacts/addContact",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const contacts = await contactAPI.addContact(payload);
+      return contacts;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteContact = createAsyncThunk(
+  "contacts/deleteContact",
+  async (contactId, { rejectWithValue }) => {
+    try {
+      const contacts = await contactAPI.deleteContact(contactId);
+      return contacts;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

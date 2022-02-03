@@ -1,27 +1,42 @@
-import { useDispatch } from "react-redux";
+import { getVisibleContacts } from "../../redux/phonebook/phonebook-selectors";
 import { addContact } from "../../redux/phonebook/phonebook-operations";
-import { useState } from "react";
-import { nanoid } from "nanoid";
 import { Form, Label, Input, Button } from "./ContactForm.styled";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { nanoid } from "nanoid";
 
 export default function ContactForm() {
 	const [name, setName] = useState("");
-	const [number, setNumber] = useState("");
+	const [phone, setPhone] = useState("");
 
+	const contacts = useSelector(getVisibleContacts);
 	const dispatch = useDispatch();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		dispatch(addContact({ name, number }));
 		resetInput();
+		if (
+			contacts.find(
+				(contact) => contact.name.toLowerCase() === name.toLowerCase()
+			)
+		) {
+			toast.error(`${name} is already in contacts.`);
+		} else if (contacts.find((contact) => contact.phone === phone)) {
+			toast.error(`${phone} is already in contacts.`);
+		} else {
+			dispatch(addContact({ name, phone }));
+		}
 	};
 
 	const resetInput = () => {
 		setName("");
-		setNumber("");
+		setPhone("");
 	};
+
 	const nameInputId = nanoid();
 	const numberInputId = nanoid();
+
 	return (
 		<Form onSubmit={handleSubmit}>
 			<Label htmlFor={nameInputId}>
@@ -44,8 +59,8 @@ export default function ContactForm() {
 					type="tel"
 					name="number"
 					id={numberInputId}
-					value={number}
-					onChange={(e) => setNumber(e.target.value)}
+					value={phone}
+					onChange={(e) => setPhone(e.target.value)}
 					pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
 					title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
 					required
